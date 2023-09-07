@@ -1,22 +1,26 @@
-import * as React from 'react';
-import './App.css';
+/* eslint-disable no-use-before-define */
+import React, { useEffect, useState } from 'react';
+import { IntlProvider } from 'react-intl';
+import { SolidityCompiler } from './lib/solidity-compiler'; // eslint-disable-line
+import zhJson from './lib/locales/zh';
+import { CompilerClientApi } from './compiler';
 
-import logo from './logo.svg';
+const remix = new CompilerClientApi();
 
-class App extends React.Component {
-  public render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
-      </div>
-    );
-  }
-}
+export const App = () => {
+  const [isLoad, setIsLoad] = useState(false);
+
+  useEffect(() => {
+    remix.client.isLoaded = true;
+    remix.client.onload(() => {
+      setIsLoad(true);
+    });
+  }, []);
+  return isLoad ? (
+    <IntlProvider locale="zh" messages={zhJson}>
+      <SolidityCompiler api={remix} />
+    </IntlProvider>
+  ) : null;
+};
 
 export default App;

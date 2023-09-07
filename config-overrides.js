@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const rewiredEsbuild = require("react-app-rewired-esbuild");
 const version = require('./package.json').version;
 
 const versionData = {
@@ -7,7 +8,7 @@ const versionData = {
   mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
 };
 
-module.exports = function override(config) {
+module.exports = function override(config, env) {
   // Update the webpack config as needed here.
   // e.g. `config.plugins.push(new MyPlugin())`
 
@@ -43,8 +44,8 @@ module.exports = function override(config) {
   config.output.publicPath = '/';
 
   // set filename
-  config.output.filename = `[name].${versionData.version}.${versionData.timestamp}.js`;
-  config.output.chunkFilename = `[name].${versionData.version}.${versionData.timestamp}.js`;
+  // config.output.filename = `[name].${versionData.version}.${versionData.timestamp}.js`;
+  // config.output.chunkFilename = `[name].${versionData.version}.${versionData.timestamp}.js`;
 
   // add copy & provide plugin
   config.plugins.push(
@@ -68,5 +69,5 @@ module.exports = function override(config) {
     ignored: /node_modules/,
   };
 
-  return config;
+  return rewiredEsbuild()(config, env);
 };
